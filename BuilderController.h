@@ -31,7 +31,7 @@
 
 #import <Cocoa/Cocoa.h>
 @class ZipArchive;
-#import "DBRestClient.h"
+#import <DropboxOSX/DropboxOSX.h>
 
 @interface BuilderController : NSObject <DBRestClientDelegate>{
 	NSTextField *bundleIdentifierField;
@@ -51,11 +51,8 @@
 	IBOutlet NSTextField *quotaTextField;
 	IBOutlet NSButton *sameAccountChecker;
 
-
-	NSString *mobileProvisionFilePath;
-	
 	DBRestClient *restClient;
-	
+
 	NSString *clipBoardLink;
 }
 
@@ -66,8 +63,6 @@
 @property (nonatomic, retain) IBOutlet NSTextField *archiveIPAFilenameField;
 
 @property (nonatomic, retain) IBOutlet NSButton *generateFilesButton;
-
-@property (nonatomic, copy) NSString *mobileProvisionFilePath;
 
 - (IBAction)specifyIPAFile:(id)sender;
 - (IBAction)generateFiles:(id)sender;

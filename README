@@ -1,1 +1,2 @@
-The files generated in this directory need to be copied into the URL that was specified as the Web deployment URL.
+Quick implementation of Dropbox SDK 1.3.3
+Beta Builder needs to be reloaded after having been authorized via OAuth, it should definitely implement a callBack but it'late and I'm lazy tonight.

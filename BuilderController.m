@@ -31,7 +31,16 @@
 
 #import "BuilderController.h"
 #import "ZipArchive.h"
-#import "DBSession.h"
+#import <DropboxOSX/DropboxOSX.h>
+
+#define kConsumerKey @"pnbt19p4knzht9w"
+#define kConsumerSecret @"dvrgk9c78uep5bg"
+
+@interface BuilderController ()
+
+@property (nonatomic, retain) NSString *mobileProvisionFilePath;
+
+@end
 
 @implementation BuilderController
 
@@ -41,16 +50,13 @@
 @synthesize webserverDirectoryField;
 @synthesize archiveIPAFilenameField;
 @synthesize generateFilesButton;
-@synthesize mobileProvisionFilePath;
 
 - (id) init {
 	self = [super init];
 	if (self) {
-		NSString* consumerKey = @"pnbt19p4knzht9w";
-		NSString* consumerSecret = @"dvrgk9c78uep5bg";
-		
-		DBSession* session = [[DBSession alloc] initWithConsumerKey:consumerKey consumerSecret:consumerSecret];
-		//session.delegate = self; // DBSessionDelegate methods allow you to handle re-authenticating
+
+
+        DBSession *session = [[DBSession alloc] initWithAppKey:kConsumerKey appSecret:kConsumerSecret root:nil];
 		[DBSession setSharedSession:session];
 		[session release];
 		
@@ -123,7 +129,7 @@
 			}
 			
 			//set mobile provision file
-			mobileProvisionFilePath = [appDirectoryPath stringByAppendingPathComponent:[[payloadContents objectAtIndex:0] stringByAppendingPathComponent:@"embedded.mobileprovision"]];
+			self.mobileProvisionFilePath = [appDirectoryPath stringByAppendingPathComponent:[[payloadContents objectAtIndex:0] stringByAppendingPathComponent:@"embedded.mobileprovision"]];
 		}
 	}
 	
@@ -236,7 +242,7 @@
 	[fileManager removeItemAtPath:tempZipPath error:nil];
 	BOOL ret = [zip CreateZipFile2:tempZipPath];
 	ret = [zip addFileToZip:[archiveIPAFilenameField stringValue] newname:[NSString stringWithFormat:@"%@.ipa", appNameString]];
-	ret = [zip addFileToZip:mobileProvisionFilePath newname:@"provisioning.mobileprovision"];
+    	ret = [zip addFileToZip:self.mobileProvisionFilePath newname:@"provisioning.mobileprovision"];
 	if(![zip CloseZipFile2]) {
 		NSLog(@"Error Creating 3.x Zip File");
 		success = NO;
@@ -270,7 +276,7 @@
 		NSLog(@"Error Copying IPA File: %@", fileCopyError);
 		success = NO;
 	}
-	BOOL copiedProvFile = [fileManager copyItemAtPath:mobileProvisionFilePath toPath:[savePath stringByAppendingPathComponent:@"provisioning.mobileprovision"] error:nil];
+	BOOL copiedProvFile = [fileManager copyItemAtPath:self.mobileProvisionFilePath toPath:[savePath stringByAppendingPathComponent:@"provisioning.mobileprovision"] error:nil];
 	if (!copiedProvFile) {
 		NSLog(@"Error Copying Prov File: %@", fileCopyError);
 		success = NO;
@@ -307,7 +313,7 @@
 	if (![[DBSession sharedSession] isLinked]) {
 		[[NSApplication sharedApplication] beginSheet:dbLoginView modalForWindow:[[NSApplication sharedApplication] mainWindow] modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	} else {
-		[[DBSession sharedSession] unlink];
+		[[DBSession sharedSession] unlinkAll];
 		NSAlert *alert = [NSAlert alertWithMessageText:@"Account Unlinked!" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Your dropbox account has been unlinked"];
 		[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] modalDelegate:nil didEndSelector:nil contextInfo:nil];
 		[dbLinkButton setTitle:@"Link"];
@@ -331,7 +337,18 @@
 	}
 	
 	if (userNameString && passwordString && ![userNameString isEqualToString:@""] && ![passwordString isEqualToString:@""]) {
-		[restClient loginWithEmail:userNameString password:passwordString];
+
+        NSDictionary *plist = [[NSBundle mainBundle] infoDictionary];
+        NSString *actualScheme = [[[[plist objectForKey:@"CFBundleURLTypes"] objectAtIndex:0] objectForKey:@"CFBundleURLSchemes"] objectAtIndex:0];
+        NSString *desiredScheme = [NSString stringWithFormat:@"db-%@", kConsumerKey];
+        NSString *alertText = nil;
+        if (![actualScheme isEqual:desiredScheme]) {
+            alertText = [NSString stringWithFormat:@"Set the url scheme to %@ for the OAuth authorize page to work correctly", desiredScheme];
+        }
+
+        //[restClient loginWithEmail:userNameString password:passwordString];
+        [[DBAuthHelperOSX sharedHelper] authenticate];
+        [dbLinkButton setTitle:@"Unlink"];
 		[[NSApplication sharedApplication] endSheet:dbLoginView];
 		[dbLoginView close];
 
@@ -401,6 +418,5 @@
 	double consumedQuotaSizeFloat = (float)consumedQuotaSize/1024.0/1024.0/1024.0;
 	[quotaTextField setStringValue:[NSString stringWithFormat:@"%.2lfGB/%.2lfGB", consumedQuotaSizeFloat, quotaSizeFloat]];
 }
-
 
 @end
