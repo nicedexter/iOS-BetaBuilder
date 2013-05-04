@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* BetaBuilderAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* BetaBuilderAppDelegate.m */; };
+		32FAE1E11735A09F0084B983 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FAE1E01735A09F0084B983 /* libz.1.2.5.dylib */; };
 		3ABBE811126ABC6F00F4549C /* DragContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBE810126ABC6F00F4549C /* DragContentView.m */; };
 		3AE2F5EF12693703000DCB74 /* DBAccountInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE2F59A12693703000DCB74 /* DBAccountInfo.m */; };
 		3AE2F5F112693703000DCB74 /* DBError.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE2F59E12693703000DCB74 /* DBError.m */; };
@@ -58,7 +59,6 @@
 		5A23434C1211AB1F0098AAB8 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A2343441211AB1F0098AAB8 /* unzip.c */; };
 		5A23434D1211AB1F0098AAB8 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 5A2343461211AB1F0098AAB8 /* zip.c */; };
 		5A23434E1211AB1F0098AAB8 /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A2343491211AB1F0098AAB8 /* ZipArchive.mm */; };
-		5A23435C1211ABD40098AAB8 /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A23435B1211ABD40098AAB8 /* libz.1.2.3.dylib */; };
 		5AA4E39D120DE13300385530 /* BuilderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AA4E39C120DE13300385530 /* BuilderController.m */; };
 		5AA4E409120DE84F00385530 /* index_template.html in Resources */ = {isa = PBXBuildFile; fileRef = 5AA4E408120DE84F00385530 /* index_template.html */; };
 		5AA4E491120DF21D00385530 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 5AA4E490120DF21D00385530 /* README */; };
@@ -79,6 +79,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32FAE1E01735A09F0084B983 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/usr/lib/libz.1.2.5.dylib; sourceTree = DEVELOPER_DIR; };
 		3ABBE80F126ABC6F00F4549C /* DragContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragContentView.h; sourceTree = "<group>"; };
 		3ABBE810126ABC6F00F4549C /* DragContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragContentView.m; sourceTree = "<group>"; };
 		3AE2F59912693703000DCB74 /* DBAccountInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBAccountInfo.h; sourceTree = "<group>"; };
@@ -188,8 +189,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32FAE1E11735A09F0084B983 /* libz.1.2.5.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				5A23435C1211ABD40098AAB8 /* libz.1.2.3.dylib in Frameworks */,
 				3AE2F64A126938F2000DCB74 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +245,7 @@
 		29B97314FDCFA39411CA2CEA /* BetaBuilder */ = {
 			isa = PBXGroup;
 			children = (
+				32FAE1E01735A09F0084B983 /* libz.1.2.5.dylib */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -583,7 +585,12 @@
 				GCC_PREFIX_HEADER = BetaBuilder_Prefix.pch;
 				INFOPLIST_FILE = "BetaBuilder-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/usr/lib\"",
+				);
 				PRODUCT_NAME = BetaBuilder;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -598,7 +605,12 @@
 				GCC_PREFIX_HEADER = BetaBuilder_Prefix.pch;
 				INFOPLIST_FILE = "BetaBuilder-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/usr/lib\"",
+				);
 				PRODUCT_NAME = BetaBuilder;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};
