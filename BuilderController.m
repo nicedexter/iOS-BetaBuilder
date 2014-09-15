@@ -45,6 +45,7 @@
 @implementation BuilderController
 
 @synthesize bundleIdentifierField;
+@synthesize versionField;
 @synthesize bundleVersionField;
 @synthesize bundleNameField;
 @synthesize webserverDirectoryField;
@@ -123,6 +124,7 @@
 			NSDictionary *bundlePlistFile = [NSDictionary dictionaryWithContentsOfFile:[appDirectoryPath stringByAppendingPathComponent:plistPath]];
 			
 			if (bundlePlistFile) {
+                [versionField setStringValue:[bundlePlistFile valueForKey:@"CFBundleShortVersionString"]];
 				[bundleVersionField setStringValue:[bundlePlistFile valueForKey:@"CFBundleVersion"]];
 				[bundleIdentifierField setStringValue:[bundlePlistFile valueForKey:@"CFBundleIdentifier"]];
 				[bundleNameField setStringValue:[bundlePlistFile valueForKey:@"CFBundleDisplayName"]];

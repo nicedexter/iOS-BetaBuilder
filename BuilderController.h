@@ -57,6 +57,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet NSTextField *bundleIdentifierField;
+@property (assign) IBOutlet NSTextField *versionField;
 @property (nonatomic, retain) IBOutlet NSTextField *bundleVersionField;
 @property (nonatomic, retain) IBOutlet NSTextField *bundleNameField;
 @property (nonatomic, retain) IBOutlet NSTextField *webserverDirectoryField;
