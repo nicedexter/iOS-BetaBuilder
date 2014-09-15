@@ -230,41 +230,24 @@
 	NSDictionary *outerManifestDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray arrayWithObject:innerManifestDictionary], @"items", nil];
 	NSLog(@"Manifest Created");
 	
-	//create html file
-	NSString *templatePath = [[NSBundle mainBundle] pathForResource:@"index_template" ofType:@"html"];
-	NSString *htmlTemplateString = [NSString stringWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:nil];
-	htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_NAME]" withString:appNameString];
-	htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_PLIST]" withString:[NSString stringWithFormat:@"%@/%@", folderURLString, @"manifest.plist"]];
-	htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[PROVISIONING]" withString:[NSString stringWithFormat:@"%@/%@", folderURLString, @"provisioning.mobileprovision"]];
-	htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[ZIP_NAME]" withString:[NSString stringWithFormat:@"%@.zip", appNameString]];
-	
-	//Create Archived Version for 3.0 Apps
-	ZipArchive* zip = [[ZipArchive alloc] init];
-	NSString *tempZipPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", appNameString]];
-	[fileManager removeItemAtPath:tempZipPath error:nil];
-	BOOL ret = [zip CreateZipFile2:tempZipPath];
-	ret = [zip addFileToZip:[archiveIPAFilenameField stringValue] newname:[NSString stringWithFormat:@"%@.ipa", appNameString]];
-    	ret = [zip addFileToZip:self.mobileProvisionFilePath newname:@"provisioning.mobileprovision"];
-	if(![zip CloseZipFile2]) {
-		NSLog(@"Error Creating 3.x Zip File");
-		success = NO;
-	}
-	[zip release];
-	
-	
+    //create html file
+    NSString* templatePath = [[NSBundle mainBundle] pathForResource:@"index_template" ofType:@"html"];
+    NSString* htmlTemplateString = [NSString stringWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:nil];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_NAME]" withString:appNameString];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_PLIST]" withString:[NSString stringWithFormat:@"%@/%@", folderURLString, @"manifest.plist"]];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_VERSION]" withString:[NSString stringWithFormat:@"Version %@ (build %@)", [versionField stringValue], metadataDictionary[@"bundle-version"]]];
+
+    NSDateFormatter* dateFormatter2 = [NSDateFormatter new];
+    [dateFormatter2 setDateFormat:@"dd.MM.yyyy HH:mm"];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[BETA_DATE]" withString:[NSString stringWithFormat:@"%@", [dateFormatter2 stringFromDate:now]]];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[PROVISIONING]" withString:[NSString stringWithFormat:@"%@/%@", folderURLString, @"provisioning.mobileprovision"]];
+    htmlTemplateString = [htmlTemplateString stringByReplacingOccurrencesOfString:@"[ZIP_NAME]" withString:[NSString stringWithFormat:@"%@.zip", appNameString]];
+
+    // DB Path
 	NSString *savePath = [NSHomeDirectory() stringByAppendingFormat:@"/Dropbox/Public/AdHoc/%@/%@", appNameString, nowString];
 	NSURL *saveDirectoryURL = [NSURL fileURLWithPath:savePath];
 	[fileManager createDirectoryAtPath:savePath withIntermediateDirectories:YES attributes:nil error:nil];
 	NSError *fileCopyError;
-	
-	//copy zip
-	NSURL *zipDestURL = [NSURL fileURLWithPath:[[saveDirectoryURL path] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", appNameString]]];
-	NSURL *zipSourceURL = [NSURL fileURLWithPath:tempZipPath];
-	BOOL copiedZIPFile = [fileManager copyItemAtURL:zipSourceURL toURL:zipDestURL error:&fileCopyError];
-	if (!copiedZIPFile) {
-		NSLog(@"Error Copying ZIP File: %@", fileCopyError);
-		success = NO;
-	}		
 	
 	//Write Files
 	[outerManifestDictionary writeToURL:[saveDirectoryURL URLByAppendingPathComponent:@"manifest.plist"] atomically:YES];
@@ -284,6 +267,23 @@
 		success = NO;
 	}
 
+    // Copy png
+    NSURL* imgSourceUrl = [[NSBundle mainBundle] URLForResource:@"btn-mobile" withExtension:@"png"];
+    NSURL* imgDestUrl = [saveDirectoryURL URLByAppendingPathComponent:@"btn-mobile.png"];
+    BOOL copiedImgFile = [fileManager copyItemAtURL:imgSourceUrl toURL:imgDestUrl error:&fileCopyError];
+    if (!copiedImgFile) {
+        NSLog(@"Error Copying Img File: %@", fileCopyError);
+        success = NO;
+    }
+
+    // Copy css
+    NSURL* cssSourceUrl = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"css"];
+    NSURL* cssDestUrl = [saveDirectoryURL URLByAppendingPathComponent:@"main.css"];
+    BOOL copiedCssFile = [fileManager copyItemAtURL:cssSourceUrl toURL:cssDestUrl error:&fileCopyError];
+    if (!copiedCssFile) {
+        NSLog(@"Error Copying Css File: %@", fileCopyError);
+        success = NO;
+    }
 	
 	if (success) {
 		//Play Done Sound / Display Alert

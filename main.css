@@ -1,0 +1,43 @@
+body {
+  background:#FFF;
+  margin:0;
+  padding:0;
+  text-align:center;
+  padding:10px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #45BCE6;
+  font-weight: 200;
+  }
+
+#container {}
+
+strong {color:#45BCE6;}
+.link a img {width: 70%;}
+
+.link.mobile a {
+    background: #45BCE6;
+    display: block;
+    height: 140px;
+    margin: 0 0px;
+    line-height: 140px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 800px) {
+    .mobile {display:none;}
+}
+
+@media (max-width: 800px) {
+    .desktop {display:none;}
+}
+
+[touch-action="none"]{ -ms-touch-action: none; touch-action: none; }
+[touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }
+[touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }
+[touch-action="scroll"],[touch-action="pan-x pan-y"],[touch-action="pan-y pan-x"]{ -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; }
