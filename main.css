@@ -28,15 +28,6 @@ strong {color:#45BCE6;}
     text-decoration: none;
 }
 
-/* Portrait tablet to landscape and desktop */
-@media (min-width: 800px) {
-    .mobile {display:none;}
-}
-
-@media (max-width: 800px) {
-    .desktop {display:none;}
-}
-
 [touch-action="none"]{ -ms-touch-action: none; touch-action: none; }
 [touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }
 [touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }
