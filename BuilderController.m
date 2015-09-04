@@ -127,7 +127,8 @@
                 [versionField setStringValue:[bundlePlistFile valueForKey:@"CFBundleShortVersionString"]];
 				[bundleVersionField setStringValue:[bundlePlistFile valueForKey:@"CFBundleVersion"]];
 				[bundleIdentifierField setStringValue:[bundlePlistFile valueForKey:@"CFBundleIdentifier"]];
-				[bundleNameField setStringValue:[bundlePlistFile valueForKey:@"CFBundleDisplayName"]];
+                NSString *s = [bundlePlistFile valueForKey:@"CFBundleName"];
+                [bundleNameField setStringValue:s ? s : @"MyApp"];
 			}
 			
 			//set mobile provision file
